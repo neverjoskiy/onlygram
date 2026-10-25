@@ -21,13 +21,12 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
+      # SDK уже предустановлен на раннере; android-actions/setup-android падает,
+      # пытаясь ставить удалённый пакет 'tools', поэтому не используем его.
       - name: Install SDK components
         run: |
-          sdkmanager --install "platforms;android-37" "cmake;3.22.1" > /dev/null
-          yes | sdkmanager --licenses > /dev/null || true
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-37" "build-tools;37.0.0" "cmake;3.22.1" > /dev/null
 
       # В репозитории нет gradlew — ставим Gradle той же версии, что в gradle-wrapper.properties
       - name: Install Gradle
